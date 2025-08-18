@@ -7,7 +7,9 @@ import DonorDashboard from './pages/DonorDashboard';
 import NGODashboard from './pages/NGODashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import RoleRoute from './components/RoleRoute';
-
+import DonationCard from './components/DonationCard';
+import DonationForm from './components/DonationForm';
+import DonationHistory from './components/DonationHistory';
 export default function App() {
   return (
     <>
