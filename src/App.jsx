@@ -1,37 +1,51 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import RoleRoute from './components/RoleRoute';
+
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import DonorDashboard from './pages/DonorDashboard';
 import NGODashboard from './pages/NGODashboard';
-import ProtectedRoute from './components/ProtectedRoute';
-import RoleRoute from './components/RoleRoute';
-import DonationCard from './components/DonationCard';
-import DonationForm from './components/DonationForm';
-import DonationHistory from './components/DonationHistory';
+import AdminDashboard from './pages/AdminDashboard';
+
 export default function App() {
   return (
     <>
       <Navbar />
-      <div className="container py-4">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+      <Routes>
+        <Route path="/" element={<Home />} />
 
-          {/* Protected Routes */}
-          <Route element={<ProtectedRoute />}>
-            <Route element={<RoleRoute allowed={['donor']} />}>
-              <Route path="/donor" element={<DonorDashboard />} />
-            </Route>
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
 
-            <Route element={<RoleRoute allowed={['ngo']} />}>
-              <Route path="/ngo" element={<NGODashboard />} />
-            </Route>
-          </Route>
-        </Routes>
-      </div>
+        <Route
+          path="/donor"
+          element={
+            <RoleRoute allowed={['donor']}>
+              <DonorDashboard />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="/ngo"
+          element={
+            <RoleRoute allowed={['ngo']}>
+              <NGODashboard />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <RoleRoute allowed={['admin']}>
+              <AdminDashboard />
+            </RoleRoute>
+          }
+        />
+
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </>
   );
 }

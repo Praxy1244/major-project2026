@@ -1,11 +1,16 @@
 export default function ItemCard({ item, onRequest }) {
   return (
     <div className="card shadow-sm h-100">
-      <div className="card-body d-flex flex-column">
-        <h5 className="card-title">{item.type} • {item.size}</h5>
-        <p className="text-muted small">{item.condition} • {item.color}</p>
-        {item.notes && <p className="small">{item.notes}</p>}
-        <button className="btn btn-primary mt-auto" onClick={() => onRequest(item)}>
+      <div className="card-body">
+        <h6 className="card-title">{item.type}</h6>
+        <p className="card-text text-muted">Size: {item.size}</p>
+        <p className="card-text">
+          <small className="text-muted">Donor: {item.donorEmail}</small>
+        </p>
+        <button
+          className="btn btn-sm btn-primary"
+          onClick={() => onRequest(item)}
+        >
           Request
         </button>
       </div>

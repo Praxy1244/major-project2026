@@ -1,90 +1,48 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export default function Signup() {
   const { register } = useAuth();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState('donor');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
+  const nav = useNavigate();
+  const [form, setForm] = useState({ name: '', email: '', password: '', role: '' });
+  const [err, setErr] = useState('');
 
-  const handleSubmit = async (e) => {
+  const submit = async (e) => {
     e.preventDefault();
-    setError('');
-    setLoading(true);
+    setErr('');
     try {
-      const user = await register({ name, email, password, role });
-      navigate(user.role === 'donor' ? '/donor' : '/ngo', { replace: true });
-    } catch (err) {
-      setError(err.response?.data?.message || 'Signup failed');
-    } finally {
-      setLoading(false);
+      const u = await register(form);
+      nav(u.role === 'donor' ? '/donor' : '/ngo');
+    } catch (e) {
+      setErr(e.message || 'Signup failed');
     }
   };
 
   return (
-    <div className="row justify-content-center">
-      <div className="col-md-7 col-lg-6">
-        <div className="card shadow-sm">
-          <div className="card-body p-4">
-            <h3 className="mb-3">Create Account</h3>
-            {error && <div className="alert alert-danger">{error}</div>}
-            <form onSubmit={handleSubmit} className="vstack gap-3">
-              <div>
-                <label className="form-label">Full Name</label>
-                <input
-                  className="form-control"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                />
-              </div>
-              <div>
-                <label className="form-label">Email</label>
-                <input
-                  type="email"
-                  className="form-control"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              <div>
-                <label className="form-label">Password</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  minLength={6}
-                />
-              </div>
-              <div>
-                <label className="form-label">Role</label>
-                <select
-                  className="form-select"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                >
+    <div className="container-fluid min-vh-100 d-flex justify-content-center align-items-center bg-light">
+  <div className="card shadow p-4" style={{ maxWidth: "400px", width: "100%" }}>
+              <h3 className="mb-3">Create an account</h3>
+              {err && <div className="alert alert-danger">{err}</div>}
+              <form onSubmit={submit} className="vstack gap-3">
+                <input className="form-control" placeholder="Full name" value={form.name}
+                       onChange={e => setForm({ ...form, name: e.target.value })} required />
+                <input className="form-control" placeholder="Email" type="email" value={form.email}
+                       onChange={e => setForm({ ...form, email: e.target.value })} required />
+                <input className="form-control" placeholder="Password" type="password" value={form.password}
+                       onChange={e => setForm({ ...form, password: e.target.value })} required />
+
+                <select className="form-select" value={form.role}
+                        onChange={e => setForm({ ...form, role: e.target.value })} required>
+                  <option value="">Select Role</option>
                   <option value="donor">Donor</option>
-                  <option value="ngo">NGO</option>
+                  <option value="ngo">NGO / Recipient</option>
                 </select>
-              </div>
-              <button className="btn btn-success" disabled={loading}>
-                {loading ? 'Creating...' : 'Sign Up'}
-              </button>
-            </form>
-            <div className="mt-3 small">
-              Already have an account? <Link to="/login">Login</Link>
+
+                <button className="btn btn-success">Create Account</button>
+              </form>
+              <p className="small text-muted mt-3 mb-0">Admin account is system-controlled; not open for signup.</p>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
   );
 }

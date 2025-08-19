@@ -1,74 +1,41 @@
 import { useState } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
   const { login } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
-  const location = useLocation();
+  const nav = useNavigate();
+  const [form, setForm] = useState({ email: '', password: '' });
+  const [err, setErr] = useState('');
 
-  const handleSubmit = async (e) => {
+  const submit = async (e) => {
     e.preventDefault();
-    setError('');
-    setLoading(true);
+    setErr('');
     try {
-      const user = await login(email, password);
-      const redirectPath =
-        user.role === 'donor'
-          ? '/donor'
-          : user.role === 'ngo'
-          ? '/ngo'
-          : '/';
-      navigate(location.state?.from?.pathname || redirectPath, { replace: true });
-    } catch (err) {
-      setError(err.response?.data?.message || 'Login failed');
-    } finally {
-      setLoading(false);
+      const u = await login(form.email, form.password);
+      if (u.role === 'donor') nav('/donor');
+      else if (u.role === 'ngo') nav('/ngo');
+      else nav('/admin');
+    } catch (e) {
+      setErr(e.message || 'Login failed');
     }
   };
 
   return (
-    <div className="row justify-content-center">
-      <div className="col-md-6 col-lg-5">
-        <div className="card shadow-sm">
-          <div className="card-body p-4">
-            <h3 className="mb-3">Login</h3>
-            {error && <div className="alert alert-danger">{error}</div>}
-            <form onSubmit={handleSubmit} className="vstack gap-3">
-              <div>
-                <label className="form-label">Email</label>
-                <input
-                  type="email"
-                  className="form-control"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              <div>
-                <label className="form-label">Password</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </div>
-              <button className="btn btn-success" disabled={loading}>
-                {loading ? 'Logging in...' : 'Login'}
-              </button>
-            </form>
-            <div className="mt-3 small">
-              No account? <Link to="/signup">Sign up</Link>
+    <div className="container-fluid min-vh-100 d-flex justify-content-center align-items-center bg-light">
+  <div className="card shadow p-4" style={{ maxWidth: "400px", width: "100%" }}>
+              <h3 className="mb-3">Welcome back</h3>
+              <p className="text-muted small">Admin? Use <code>admin@scdp.com</code> / <code>admin123</code></p>
+              {err && <div className="alert alert-danger">{err}</div>}
+              <form onSubmit={submit} className="vstack gap-3">
+                <input className="form-control" placeholder="Email" type="email"
+                       value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required />
+                <input className="form-control" placeholder="Password" type="password"
+                       value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} required />
+                <button className="btn btn-primary">Login</button>
+              </form>
+              <p className="small text-muted mt-3 mb-0">Tip: open different browsers to login as donor/ngo/admin simultaneously.</p>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
   );
 }
