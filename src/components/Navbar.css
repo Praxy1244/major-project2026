@@ -1,0 +1,19 @@
+.navbar {
+  background: #ffffff !important;
+}
+
+.nav-link {
+  font-weight: 500;
+  color: #333 !important;
+  margin-right: 12px;
+}
+
+.nav-link.active {
+  color: #ff7b00 !important;
+}
+
+.btn {
+  border-radius: 25px;
+  font-weight: 500;
+  padding: 6px 18px;
+}

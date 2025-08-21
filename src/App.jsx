@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import RoleRoute from './components/RoleRoute';
 
+
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
